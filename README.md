@@ -54,7 +54,7 @@ This project covers 15 analytical SQL techniques grouped by skill level.
 
 ## Analysis Queries
 
-Below are the 15 SQL queries implemented in `analysis_queries.sql`:
+Below are the 15 SQL queries implemented in `analysis_queries.md`:
 
 | # | Query | Description |
 |---|-------|--------------|
