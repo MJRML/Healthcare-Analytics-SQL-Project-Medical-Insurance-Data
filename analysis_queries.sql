@@ -19,6 +19,9 @@ GROUP BY
 ORDER BY 
    avg_charges DESC;
 
+![Query1](Images/query_1.png)
+
+
 
 
 
