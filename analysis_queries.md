@@ -304,3 +304,50 @@ ORDER BY
 
 **Insight:**
 Obese smokers incur the highest combined risk and costs.
+
+--- 
+
+## Query 13: Age-Adjusted High-Cost Patients
+
+**Purpose:** Identify patients paying above the average for their age group.  
+**Techniques:** CTE (WITH), JOIN
+
+```sql
+WITH age_avg AS (
+    SELECT
+        CASE
+            WHEN age BETWEEN 18 AND 25 THEN '18–25'
+            WHEN age BETWEEN 26 AND 35 THEN '26–35'
+            WHEN age BETWEEN 36 AND 45 THEN '36–45'
+            WHEN age BETWEEN 46 AND 55 THEN '46–60'
+            ELSE '60+'
+        END AS age_group,
+        ROUND(AVG(charges),2) AS avg_charges
+    FROM medical_insurance
+    GROUP BY age_group
+)
+SELECT
+  m.age,
+  m.sex,
+  m.charges,
+  a.age_group,
+  a.avg_charges
+FROM medical_insurance m
+JOIN age_avg a
+  ON CASE
+         WHEN m.age BETWEEN 18 AND 25 THEN '18–25'
+         WHEN m.age BETWEEN 26 AND 35 THEN '26–35'
+         WHEN m.age BETWEEN 36 AND 45 THEN '36–45'
+         WHEN m.age BETWEEN 46 AND 55 THEN '46–60'
+         ELSE '60+'
+     END = a.age_group
+WHERE m.charges > a.avg_charges
+ORDER BY
+  m.charges DESC;
+
+```   
+
+![Query13](Images/query_99.png)
+
+**Insight:**
+Highlights high-cost patients relative to their age group.
