@@ -92,9 +92,11 @@ Below are the 15 SQL queries implemented in `analysis_queries.sql`:
 
 ```sql
 SELECT *
-FROM medical_insurance
+FROM
+    medical_insurance
 WHERE charges >= (
     SELECT PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY charges)
     FROM medical_insurance
 )
-ORDER BY charges DESC;
+ORDER BY
+    charges DESC;
