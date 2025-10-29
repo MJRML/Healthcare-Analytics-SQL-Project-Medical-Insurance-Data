@@ -351,3 +351,49 @@ ORDER BY
 
 **Insight:**
 Highlights high-cost patients relative to their age group.
+
+--- 
+
+## Query 14: Regional Charge Contribution
+
+**Purpose:** Show each patient’s contribution to total regional charges.   
+**Techniques:** SUM() OVER PARTITION BY, ROUND()
+
+```sql
+SELECT
+  region,
+  age,
+  sex,
+  charges,
+  ROUND(100 * charges / SUM(charges) OVER (PARTITION BY region), 2) AS percent_of_region
+FROM
+  medical_insurance
+ORDER BY
+  region, percent_of_region DESC;
+```
+
+![Query14](Images/query_14.png)
+
+**Insight:**
+Shows what portion of total regional costs each patient represents.
+
+---
+
+## Query 15: Outlier Detection (High BMI + High Charges)
+
+**Purpose:** Identify patients who are outliers in both BMI and charges.  
+**Techniques:** PERCENTILE_CONT(), subqueries
+
+```sql
+SELECT *
+FROM
+  medical_insurance
+WHERE bmi > (SELECT PERCENTILE_CONT(0.85) WITHIN GROUP (ORDER BY bmi) FROM medical_insurance)
+  AND charges > (SELECT PERCENTILE_CONT(0.85) WITHIN GROUP (ORDER BY charges) FROM medical_insurance)
+ORDER BY charges DESC;
+```
+
+![Query15](Images/query_15.png)
+
+**Insight:**
+High-risk, high-cost individuals are identified for further analysis.
