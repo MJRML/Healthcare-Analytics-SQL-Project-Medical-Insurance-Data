@@ -1,9 +1,8 @@
-Query 1 — Average Charges by Smoking Status
-
-Goal: Compare cost differences between smokers and non-smokers.
-Skills: GROUP BY, AVG(), ORDER BY.
-
--- Query 1: Average Charges by Smoking Status
+/* ============================================================
+   Query 1: Average Charges by Smoking Status
+   Purpose: Compare cost differences between smokers and non-smokers
+   Techniques: GROUP BY, AVG(), ORDER BY
+   ============================================================ */
 SELECT smoker,
        ROUND(AVG(charges), 2) AS avg_charges
 FROM medical_insurance
