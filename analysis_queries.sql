@@ -1,7 +1,7 @@
--- Query 1 — Average Charges by Smoking Status
+Query 1 — Average Charges by Smoking Status
 
--- Goal: Compare cost differences between smokers and non-smokers.
--- Skills: GROUP BY, AVG(), ORDER BY.
+Goal: Compare cost differences between smokers and non-smokers.
+Skills: GROUP BY, AVG(), ORDER BY.
 
 -- Query 1: Average Charges by Smoking Status
 SELECT smoker,
