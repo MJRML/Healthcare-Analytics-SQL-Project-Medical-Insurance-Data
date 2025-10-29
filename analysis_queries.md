@@ -180,7 +180,7 @@ Shows any gender-based difference in healthcare spending.
 
 ## Query 8: BMI and Charges Ranking  
 
-**Purpose:** Rank patients by BMI and medical charges.
+**Purpose:** Rank patients by BMI and medical charges.  
 **Techniques:** RANK() OVER, ORDER BY
 
 ```sql
@@ -196,7 +196,111 @@ FROM
 ORDER BY
   charge_rank;
 ```
-![Query8](Images/query_8.png)  
+![Query8](Images/query_88.png)  
 
 **Insight:**
 Helps visualize correlation between BMI rank and charges rank.
+
+---
+## Query 9: Smoker vs Non-Smoker by Region
+
+**Purpose:** Compare average charges of smokers vs non-smokers across regions.  
+**Techniques:** GROUP BY multiple columns, AVG()  
+
+```sql
+SELECT
+  region,
+  smoker,
+  ROUND(AVG(charges), 2) AS avg_charges
+FROM
+  medical_insurance
+GROUP BY
+  region, smoker
+ORDER BY
+  region,
+  avg_charges DESC;
+```
+
+![Query9](Images/query_9.png)  
+
+**Insight:**
+Smokers consistently have higher charges in every region.
+
+---
+
+## Query 10: High-Cost Patients (Top 10%)
+
+**Purpose:** Identify patients in the top 10% of charges.  
+**Techniques:** PERCENTILE_CONT(), subquery
+
+```sql
+SELECT *
+FROM
+  medical_insurance
+WHERE charges >= (
+    SELECT PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY charges)
+    FROM medical_insurance
+)
+ORDER BY
+  charges DESC;
+```
+
+![Query10](Images/query_10.png)  
+
+**Insight:**
+Highlights high-cost outliers for further analysis.
+
+---
+
+## Query 11: Top 3 Patients per Region
+
+**Purpose:** Identify the three most expensive patients per region.  
+**Techniques:** RANK() OVER PARTITION BY, subquery
+
+```sql
+SELECT *
+FROM (
+    SELECT region, age, sex, charges,
+           RANK() OVER (PARTITION BY region ORDER BY charges DESC) AS regional_rank
+    FROM medical_insurance
+)
+WHERE regional_rank <= 3
+ORDER BY
+  region,
+  regional_rank;
+```
+
+![Query11](Images/query_11.png)
+
+**Insight:**
+Shows top spenders per region.
+
+---
+
+## Query 12: Smoker Impact by BMI Category
+
+**Purpose:** Analyze charges by BMI category and smoker status.  
+**Techniques:** CASE WHEN, GROUP BY multiple columns, AVG()
+
+```sql
+SELECT
+    CASE
+        WHEN bmi < 18.5 THEN 'Underweight'
+        WHEN bmi BETWEEN 18.5 AND 24.9 THEN 'Normal'
+        WHEN bmi BETWEEN 25 AND 29.9 THEN 'Overweight'
+        ELSE 'Obese'
+    END AS bmi_category,
+    smoker,
+    ROUND(AVG(charges), 2) AS avg_charges
+FROM
+  medical_insurance
+GROUP BY
+  bmi_category, smoker
+ORDER BY
+  bmi_category, smoker;
+```
+
+![Query12](Images/query_12.png)
+
+**Insight:**
+Obese smokers incur the highest combined risk and costs.
